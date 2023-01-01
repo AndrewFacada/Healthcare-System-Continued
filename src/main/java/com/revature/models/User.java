@@ -1,21 +1,48 @@
 package com.revature.models;
 
+import java.time.LocalDate;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "user_info")
 public class User {
-	private String user_id;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int user_id;
+	
+	@Column(name = "first_name")
 	private String firstName;
+	
+	@Column(name = "last_name")
 	private String lastName;
+	
+	
 	private String email;
+	
+	
 	private String password;
-	private String dateOfBirth;
+	
+	@Column(name = "dob")
+	private LocalDate dateOfBirth;
+	
+	@Column(name = "ssn")
 	private String socialSecurityNumber;
+	
+	
 	private String address;
+	
+	@Column(name = "current_employee")
 	private boolean currentEmployee;
+	
+	@Column(name = "current_subscriber")
 	private boolean currentSubscriber;
 	
 
 
 	//constructor for creating a new user
-	public User(String firstName, String lastName, String email, String password, String dateOfBirth,
+	public User(String firstName, String lastName, String email, String password, LocalDate dateOfBirth,
 			String socialSecurityNumber, String address, boolean currentEmployee, boolean currentSubscriber) {
 		super();
 		this.firstName = firstName;
@@ -40,7 +67,7 @@ public class User {
 
 	
 	//constructor for logging in part 2
-	public User(String user_id, String firstName, String lastName, String email, String password, String dateOfBirth,
+	public User(int user_id, String firstName, String lastName, String email, String password, LocalDate dateOfBirth,
 			String socialSecurityNumber, String address, boolean currentEmployee, boolean currentSubscriber) {
 		super();
 		this.user_id = user_id;
@@ -77,13 +104,13 @@ public class User {
 	
 	
 
-	public String getUser_id() {
+	public int getUser_id() {
 		return user_id;
 	}
 
 
 
-	public void setUser_id(String user_id) {
+	public void setUser_id(int user_id) {
 		this.user_id = user_id;
 	}
 
@@ -121,11 +148,11 @@ public class User {
 		this.password = password;
 	}
 
-	public String getDateOfBirth() {
+	public LocalDate getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(String dateOfBirth) {
+	public void setDateOfBirth(LocalDate dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 

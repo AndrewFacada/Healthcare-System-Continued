@@ -1,6 +1,9 @@
 package com.revature.controllers;
 
 import com.revature.models.User;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import com.revature.services.UserService;
 
 import java.time.format.DateTimeFormatter;
@@ -54,12 +57,15 @@ public class UserController implements Controller{
 		User user = ctx.bodyAsClass(User.class); //creates new user from JSON body
 		
 		if(user.getFirstName().isEmpty() || user.getLastName().isEmpty() ||     //Checks to be sure fields are not empty
-				user.getEmail().isEmpty() || user.getPassword().isEmpty() || user.getDateOfBirth().isEmpty() ||
+				user.getEmail().isEmpty() || user.getPassword().isEmpty() || 
 				user.getSocialSecurityNumber().isEmpty() || user.getAddress().isEmpty()) {
 			
 			ctx.json("You must fill in all fields!");
 			ctx.status(400);
 		}else {
+			//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/d");
+			//LocalDate localDate = LocalDate.parse(user.getDateOfBirth(),formatter);
+			//user.setDateOfBirth(localDate);
 			if(userService.newAccount(user) == false) { //if false means account already exists under that email
 				String temp = "An account already exists with that email!";
 				ctx.json(temp);
