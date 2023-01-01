@@ -6,11 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.JDBCException;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.hibernate.query.NativeQuery;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -18,22 +22,38 @@ import java.time.format.DateTimeFormatter;
 import com.revature.models.User;
 import com.revature.utils.ConnectionUtil;
 
+//import jakarta.persistence.Query;
+
 public class UserDAOImpl implements UserDAO {
 
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/d");
+	SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 
 	@Override
 	public boolean createAccount(User user) {
-
-		SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-		Session session = sessionFactory.openSession();
-		session.beginTransaction();
-
-		session.persist(user);
-
-		session.getTransaction().commit();
-		session.close();
-		return true;
+		try(Session session = sessionFactory.openSession()){
+			session.beginTransaction();
+			
+			String hql = "SELECT email from user_info WHERE email = ?;";
+			List<?> result = session.createNativeQuery(hql).setParameter(1,user.getEmail()).list();
+			Iterator<?> it = result.iterator();
+			
+			if(it.hasNext()) {
+				session.close();
+				return false;
+			}else {
+				session.persist(user);
+				session.getTransaction().commit();
+				session.close();
+				return true;
+			}
+			
+			
+		}catch(JDBCException e) {
+			 e.printStackTrace();
+			 return false;
+		}
+		
 
 		/*
 		 * try (Connection connection = ConnectionUtil.getConnection()) { // first
