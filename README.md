@@ -1,4 +1,7 @@
-# synergy-password1-project2
+# Continuation of Healthcare System.
+Moved from https://github.com/221114JavaFS/synergy-password1-project2. Was a group project,
+but moving to a single. Still need to fix issues with other software engineers work, prior
+to Hibernate update.
 
 ////TESTING PURPOSES////
 
