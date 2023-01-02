@@ -5,22 +5,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.JDBCException;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
-import org.hibernate.query.NativeQuery;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.query.SelectionQuery;
+import org.hibernate.query.sql.internal.SQLQueryParser;
 
 import com.revature.models.User;
 import com.revature.utils.ConnectionUtil;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
 //import jakarta.persistence.Query;
 
@@ -89,7 +90,39 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public User login(User user) {
-		try (Connection connection = ConnectionUtil.getConnection()) {
+		try(Session session = sessionFactory.openSession()){
+			session.beginTransaction();
+			
+			String hql = "SELECT * FROM user_info WHERE email = ? AND password = ?;";
+			List<?> result = session.createNativeQuery(hql).setParameter(1,user.getEmail()).setParameter(2, user.getPassword()).list();
+			Iterator<?> it = result.iterator();
+			
+			
+			if(it.hasNext()) {
+				User a = new User();
+				Object[] object = (Object[]) it.next();
+				a.setUser_id((int)object[0]);
+				a.setFirstName((String)object[1]);
+				a.setLastName((String)object[2]);
+				a.setEmail((String)object[3]);
+				a.setPassword((String)object[4]);
+				a.setDateOfBirth(null);
+				a.setSocialSecurityNumber((String) object[6]);
+				a.setCurrentEmployee((boolean)object[7]);
+				a.setCurrentSubscriber((boolean)object[8]);
+				return a;
+			}else {
+				return null;
+			}
+			
+			
+		}catch(JDBCException e) {
+			 e.printStackTrace();
+			 return null;
+		}
+		
+		
+		/*try (Connection connection = ConnectionUtil.getConnection()) {
 
 			PreparedStatement statement = connection.prepareStatement(
 					"Select user_id, first_name, last_name, email, password, DoB, SSN, address, current_employee, current_subscriber FROM user_info WHERE email = ? AND password = ?;");
@@ -119,7 +152,7 @@ public class UserDAOImpl implements UserDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
-		}
+		}*/
 	}
 
 	@Override

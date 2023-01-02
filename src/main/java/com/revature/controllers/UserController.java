@@ -57,7 +57,7 @@ public class UserController implements Controller{
 		User user = ctx.bodyAsClass(User.class); //creates new user from JSON body
 		
 		if(user.getFirstName().isEmpty() || user.getLastName().isEmpty() ||     //Checks to be sure fields are not empty
-				user.getEmail().isEmpty() || user.getPassword().isEmpty() || 
+				user.getEmail().isEmpty() || !user.getEmail().contains("@") ||user.getPassword().isEmpty() || 
 				user.getSocialSecurityNumber().isEmpty() || user.getAddress().isEmpty()) {
 			
 			ctx.json("You must fill in all fields!");
