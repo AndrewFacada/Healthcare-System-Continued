@@ -108,8 +108,9 @@ public class UserDAOImpl implements UserDAO {
 				a.setPassword((String)object[4]);
 				a.setDateOfBirth(null);
 				a.setSocialSecurityNumber((String) object[6]);
-				a.setCurrentEmployee((boolean)object[7]);
-				a.setCurrentSubscriber((boolean)object[8]);
+				a.setAddress((String)object[7]);
+				a.setCurrentEmployee((boolean)object[8]);
+				a.setCurrentSubscriber((boolean)object[9]);
 				return a;
 			}else {
 				return null;
