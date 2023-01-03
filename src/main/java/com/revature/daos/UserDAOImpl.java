@@ -56,7 +56,7 @@ public class UserDAOImpl implements UserDAO {
 		}
 		
 
-		/*
+		/*JDBC CODE PRIOR TO HIBERNATE TRANSITION
 		 * try (Connection connection = ConnectionUtil.getConnection()) { // first
 		 * checks if email is in database PreparedStatement statement =
 		 * connection.prepareStatement("SELECT email FROM user_info WHERE email = ?;");
@@ -122,7 +122,7 @@ public class UserDAOImpl implements UserDAO {
 			 return null;
 		}
 		
-		
+		//JDBC CODE PRIOR TO HIBERNATE TRANSITION
 		/*try (Connection connection = ConnectionUtil.getConnection()) {
 
 			PreparedStatement statement = connection.prepareStatement(
@@ -158,7 +158,42 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public List<User> viewAllUsers() {
-		try (Connection connection = ConnectionUtil.getConnection()) {
+		
+		try(Session session = sessionFactory.openSession()){
+			session.beginTransaction();
+			
+			String hql = "Select * FROM user_info;";
+			List<?> result = session.createNativeQuery(hql).list();
+			Iterator<?> it = result.iterator();
+			
+			List<User> list = new ArrayList<>();
+			
+			while(it.hasNext()) {
+				User a = new User();
+				Object[] object = (Object[]) it.next();
+				a.setUser_id((int)object[0]);
+				a.setFirstName((String)object[1]);
+				a.setLastName((String)object[2]);
+				a.setEmail((String)object[3]);
+				a.setPassword(null);
+				a.setDateOfBirth(null);
+				a.setSocialSecurityNumber((String) object[6]);
+				a.setAddress((String)object[7]);
+				a.setCurrentEmployee((boolean)object[8]);
+				a.setCurrentSubscriber((boolean)object[9]);
+				list.add(a);
+			}
+			return list;
+			
+			
+		}catch(JDBCException e) {
+			 e.printStackTrace();
+			 return null;
+		}
+		
+		
+		//JDBC CODE PRIOR TO HIBERNATE TRANSITION
+		/*try (Connection connection = ConnectionUtil.getConnection()) {
 			String sql = "Select * FROM user_info;";
 			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(sql);
@@ -186,7 +221,7 @@ public class UserDAOImpl implements UserDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
-		}
+		}*/
 	}
 
 	@Override
